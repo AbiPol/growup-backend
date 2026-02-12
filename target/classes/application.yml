@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: growup-backend
+  datasource:
+    url: jdbc:postgresql://localhost:5433/growup_db
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:admin}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+# JWT Configuration (Placeholder)
+jwt:
+  secret: ${JWT_SECRET:secretodbmuylargoyseguroparagrowupbackend2024}
+  expiration: 86400000 # 24 hours
