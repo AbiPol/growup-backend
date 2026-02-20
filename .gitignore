@@ -59,7 +59,12 @@ replay_pid*
 # Spring Boot
 src/main/resources/application.properties
 src/main/resources/application-*.properties
+src/main/resources/application.yml
+src/main/resources/application.yaml
+src/main/resources/application-*.yml
+src/main/resources/application-*.yaml
 !src/main/resources/application.properties.example
+!src/main/resources/application.yml.example
 
 # OS Files
 .DS_Store
