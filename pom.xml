@@ -147,7 +147,7 @@
 							<goal>generate</goal>
 						</goals>
 						<configuration>
-							<inputSpec>${project.basedir}/../gorwup-ops/specs/openapi.yaml</inputSpec>
+							<inputSpec>${project.basedir}/../growup-ops/specs/openapi.yaml</inputSpec>
 							<generatorName>spring</generatorName>
 							<apiPackage>com.growup.backend.api</apiPackage>
 							<modelPackage>com.growup.backend.model</modelPackage>

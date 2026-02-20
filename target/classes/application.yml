@@ -1,3 +1,5 @@
+server:
+  port: 8080
 spring:
   application:
     name: growup-backend
@@ -12,7 +14,6 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-
 # JWT Configuration (Placeholder)
 jwt:
   secret: ${JWT_SECRET:secretodbmuylargoyseguroparagrowupbackend2024}

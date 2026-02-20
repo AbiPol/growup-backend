@@ -19,7 +19,7 @@ import jakarta.annotation.Generated;
  * UpdateUserRequest
  */
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2026-02-12T11:59:11.015804600Z[Atlantic/Canary]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2026-02-20T14:24:19.066966500Z[Atlantic/Canary]")
 public class UpdateUserRequest {
 
   private String name;
@@ -31,6 +31,8 @@ public class UpdateUserRequest {
   private String bio;
 
   private String password;
+
+  private Long version;
 
   public UpdateUserRequest name(String name) {
     this.name = name;
@@ -132,6 +134,26 @@ public class UpdateUserRequest {
     this.password = password;
   }
 
+  public UpdateUserRequest version(Long version) {
+    this.version = version;
+    return this;
+  }
+
+  /**
+   * Versión de control de concurrencia
+   * @return version
+  */
+  
+  @Schema(name = "version", description = "Versión de control de concurrencia", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+  @JsonProperty("version")
+  public Long getVersion() {
+    return version;
+  }
+
+  public void setVersion(Long version) {
+    this.version = version;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -145,12 +167,13 @@ public class UpdateUserRequest {
         Objects.equals(this.email, updateUserRequest.email) &&
         Objects.equals(this.avatar, updateUserRequest.avatar) &&
         Objects.equals(this.bio, updateUserRequest.bio) &&
-        Objects.equals(this.password, updateUserRequest.password);
+        Objects.equals(this.password, updateUserRequest.password) &&
+        Objects.equals(this.version, updateUserRequest.version);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(name, email, avatar, bio, password);
+    return Objects.hash(name, email, avatar, bio, password, version);
   }
 
   @Override
@@ -162,6 +185,7 @@ public class UpdateUserRequest {
     sb.append("    avatar: ").append(toIndentedString(avatar)).append("\n");
     sb.append("    bio: ").append(toIndentedString(bio)).append("\n");
     sb.append("    password: ").append("*").append("\n");
+    sb.append("    version: ").append(toIndentedString(version)).append("\n");
     sb.append("}");
     return sb.toString();
   }

@@ -23,7 +23,7 @@ import jakarta.annotation.Generated;
  * A delegate to be called by the {@link AutenticacinApiController}}.
  * Implement this interface with a {@link org.springframework.stereotype.Service} annotated class.
  */
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2026-02-12T11:59:11.015804600Z[Atlantic/Canary]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2026-02-20T14:24:19.066966500Z[Atlantic/Canary]")
 public interface AutenticacinApiDelegate {
 
     default Optional<NativeWebRequest> getRequest() {
@@ -43,7 +43,7 @@ public interface AutenticacinApiDelegate {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"user\" : { \"joinDate\" : \"2000-01-23T04:56:07.000+00:00\", \"name\" : \"name\", \"bio\" : \"bio\", \"id\" : \"046b6c7f-0b8a-43b9-b35d-6489e6daee91\", \"avatar\" : \"https://openapi-generator.tech\", \"isActive\" : true, \"email\" : \"email\" }, \"token\" : \"token\" }";
+                    String exampleString = "{ \"user\" : { \"joinDate\" : \"2000-01-23T04:56:07.000+00:00\", \"name\" : \"name\", \"bio\" : \"bio\", \"id\" : \"046b6c7f-0b8a-43b9-b35d-6489e6daee91\", \"avatar\" : \"https://openapi-generator.tech\", \"isActive\" : true, \"version\" : 0, \"email\" : \"email\" }, \"token\" : \"token\" }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }
@@ -65,7 +65,7 @@ public interface AutenticacinApiDelegate {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"joinDate\" : \"2000-01-23T04:56:07.000+00:00\", \"name\" : \"name\", \"bio\" : \"bio\", \"id\" : \"046b6c7f-0b8a-43b9-b35d-6489e6daee91\", \"avatar\" : \"https://openapi-generator.tech\", \"isActive\" : true, \"email\" : \"email\" }";
+                    String exampleString = "{ \"joinDate\" : \"2000-01-23T04:56:07.000+00:00\", \"name\" : \"name\", \"bio\" : \"bio\", \"id\" : \"046b6c7f-0b8a-43b9-b35d-6489e6daee91\", \"avatar\" : \"https://openapi-generator.tech\", \"isActive\" : true, \"version\" : 0, \"email\" : \"email\" }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }
@@ -88,7 +88,7 @@ public interface AutenticacinApiDelegate {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"joinDate\" : \"2000-01-23T04:56:07.000+00:00\", \"name\" : \"name\", \"bio\" : \"bio\", \"id\" : \"046b6c7f-0b8a-43b9-b35d-6489e6daee91\", \"avatar\" : \"https://openapi-generator.tech\", \"isActive\" : true, \"email\" : \"email\" }";
+                    String exampleString = "{ \"joinDate\" : \"2000-01-23T04:56:07.000+00:00\", \"name\" : \"name\", \"bio\" : \"bio\", \"id\" : \"046b6c7f-0b8a-43b9-b35d-6489e6daee91\", \"avatar\" : \"https://openapi-generator.tech\", \"isActive\" : true, \"version\" : 0, \"email\" : \"email\" }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }
@@ -111,7 +111,7 @@ public interface AutenticacinApiDelegate {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"user\" : { \"joinDate\" : \"2000-01-23T04:56:07.000+00:00\", \"name\" : \"name\", \"bio\" : \"bio\", \"id\" : \"046b6c7f-0b8a-43b9-b35d-6489e6daee91\", \"avatar\" : \"https://openapi-generator.tech\", \"isActive\" : true, \"email\" : \"email\" }, \"token\" : \"token\" }";
+                    String exampleString = "{ \"user\" : { \"joinDate\" : \"2000-01-23T04:56:07.000+00:00\", \"name\" : \"name\", \"bio\" : \"bio\", \"id\" : \"046b6c7f-0b8a-43b9-b35d-6489e6daee91\", \"avatar\" : \"https://openapi-generator.tech\", \"isActive\" : true, \"version\" : 0, \"email\" : \"email\" }, \"token\" : \"token\" }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }

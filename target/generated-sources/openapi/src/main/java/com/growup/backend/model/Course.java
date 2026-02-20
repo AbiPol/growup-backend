@@ -33,7 +33,7 @@ import jakarta.annotation.Generated;
  * Course
  */
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2026-02-12T11:59:11.015804600Z[Atlantic/Canary]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2026-02-20T14:24:19.066966500Z[Atlantic/Canary]")
 public class Course {
 
   private UUID id;
@@ -76,6 +76,8 @@ public class Course {
 
   private Integer enrolledCount;
 
+  private Long version;
+
   public Course() {
     super();
   }
@@ -83,12 +85,13 @@ public class Course {
   /**
    * Constructor with only required parameters
    */
-  public Course(UUID id, String name, String category, Double price, CourseStatus publicationStatus) {
+  public Course(UUID id, String name, String category, Double price, CourseStatus publicationStatus, Long version) {
     this.id = id;
     this.name = name;
     this.category = category;
     this.price = price;
     this.publicationStatus = publicationStatus;
+    this.version = version;
   }
 
   public Course id(UUID id) {
@@ -439,6 +442,26 @@ public class Course {
     this.enrolledCount = enrolledCount;
   }
 
+  public Course version(Long version) {
+    this.version = version;
+    return this;
+  }
+
+  /**
+   * Versión de control de concurrencia
+   * @return version
+  */
+  @NotNull 
+  @Schema(name = "version", description = "Versión de control de concurrencia", requiredMode = Schema.RequiredMode.REQUIRED)
+  @JsonProperty("version")
+  public Long getVersion() {
+    return version;
+  }
+
+  public void setVersion(Long version) {
+    this.version = version;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -464,7 +487,8 @@ public class Course {
         equalsNullable(this.deletedAt, course.deletedAt) &&
         Objects.equals(this.instructor, course.instructor) &&
         Objects.equals(this.syllabus, course.syllabus) &&
-        Objects.equals(this.enrolledCount, course.enrolledCount);
+        Objects.equals(this.enrolledCount, course.enrolledCount) &&
+        Objects.equals(this.version, course.version);
   }
 
   private static <T> boolean equalsNullable(JsonNullable<T> a, JsonNullable<T> b) {
@@ -473,7 +497,7 @@ public class Course {
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name, description, imageUrl, category, level, price, duration, startDate, endDate, publicationStatus, createdAt, updatedAt, hashCodeNullable(deletedAt), instructor, syllabus, enrolledCount);
+    return Objects.hash(id, name, description, imageUrl, category, level, price, duration, startDate, endDate, publicationStatus, createdAt, updatedAt, hashCodeNullable(deletedAt), instructor, syllabus, enrolledCount, version);
   }
 
   private static <T> int hashCodeNullable(JsonNullable<T> a) {
@@ -504,6 +528,7 @@ public class Course {
     sb.append("    instructor: ").append(toIndentedString(instructor)).append("\n");
     sb.append("    syllabus: ").append(toIndentedString(syllabus)).append("\n");
     sb.append("    enrolledCount: ").append(toIndentedString(enrolledCount)).append("\n");
+    sb.append("    version: ").append(toIndentedString(version)).append("\n");
     sb.append("}");
     return sb.toString();
   }

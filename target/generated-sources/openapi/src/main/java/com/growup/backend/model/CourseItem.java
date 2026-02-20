@@ -33,7 +33,7 @@ import jakarta.annotation.Generated;
  * CourseItem
  */
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2026-02-12T11:59:11.015804600Z[Atlantic/Canary]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2026-02-20T14:24:19.066966500Z[Atlantic/Canary]")
 public class CourseItem {
 
   private UUID id;
@@ -76,6 +76,8 @@ public class CourseItem {
 
   private Integer enrolledCount;
 
+  private Long version;
+
   private Integer students;
 
   private BigDecimal rating;
@@ -87,12 +89,13 @@ public class CourseItem {
   /**
    * Constructor with only required parameters
    */
-  public CourseItem(UUID id, String name, String category, Double price, CourseStatus publicationStatus) {
+  public CourseItem(UUID id, String name, String category, Double price, CourseStatus publicationStatus, Long version) {
     this.id = id;
     this.name = name;
     this.category = category;
     this.price = price;
     this.publicationStatus = publicationStatus;
+    this.version = version;
   }
 
   public CourseItem id(UUID id) {
@@ -443,6 +446,26 @@ public class CourseItem {
     this.enrolledCount = enrolledCount;
   }
 
+  public CourseItem version(Long version) {
+    this.version = version;
+    return this;
+  }
+
+  /**
+   * Versión de control de concurrencia
+   * @return version
+  */
+  @NotNull 
+  @Schema(name = "version", description = "Versión de control de concurrencia", requiredMode = Schema.RequiredMode.REQUIRED)
+  @JsonProperty("version")
+  public Long getVersion() {
+    return version;
+  }
+
+  public void setVersion(Long version) {
+    this.version = version;
+  }
+
   public CourseItem students(Integer students) {
     this.students = students;
     return this;
@@ -511,6 +534,7 @@ public class CourseItem {
         Objects.equals(this.instructor, courseItem.instructor) &&
         Objects.equals(this.syllabus, courseItem.syllabus) &&
         Objects.equals(this.enrolledCount, courseItem.enrolledCount) &&
+        Objects.equals(this.version, courseItem.version) &&
         Objects.equals(this.students, courseItem.students) &&
         Objects.equals(this.rating, courseItem.rating);
   }
@@ -521,7 +545,7 @@ public class CourseItem {
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name, description, imageUrl, category, level, price, duration, startDate, endDate, publicationStatus, createdAt, updatedAt, hashCodeNullable(deletedAt), instructor, syllabus, enrolledCount, students, rating);
+    return Objects.hash(id, name, description, imageUrl, category, level, price, duration, startDate, endDate, publicationStatus, createdAt, updatedAt, hashCodeNullable(deletedAt), instructor, syllabus, enrolledCount, version, students, rating);
   }
 
   private static <T> int hashCodeNullable(JsonNullable<T> a) {
@@ -552,6 +576,7 @@ public class CourseItem {
     sb.append("    instructor: ").append(toIndentedString(instructor)).append("\n");
     sb.append("    syllabus: ").append(toIndentedString(syllabus)).append("\n");
     sb.append("    enrolledCount: ").append(toIndentedString(enrolledCount)).append("\n");
+    sb.append("    version: ").append(toIndentedString(version)).append("\n");
     sb.append("    students: ").append(toIndentedString(students)).append("\n");
     sb.append("    rating: ").append(toIndentedString(rating)).append("\n");
     sb.append("}");

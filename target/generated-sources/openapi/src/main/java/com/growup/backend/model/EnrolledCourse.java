@@ -34,7 +34,7 @@ import jakarta.annotation.Generated;
  * EnrolledCourse
  */
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2026-02-12T11:59:11.015804600Z[Atlantic/Canary]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2026-02-20T14:24:19.066966500Z[Atlantic/Canary]")
 public class EnrolledCourse {
 
   private UUID id;
@@ -77,6 +77,8 @@ public class EnrolledCourse {
 
   private Integer enrolledCount;
 
+  private Long version;
+
   private Integer progress;
 
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
@@ -93,12 +95,13 @@ public class EnrolledCourse {
   /**
    * Constructor with only required parameters
    */
-  public EnrolledCourse(UUID id, String name, String category, Double price, CourseStatus publicationStatus) {
+  public EnrolledCourse(UUID id, String name, String category, Double price, CourseStatus publicationStatus, Long version) {
     this.id = id;
     this.name = name;
     this.category = category;
     this.price = price;
     this.publicationStatus = publicationStatus;
+    this.version = version;
   }
 
   public EnrolledCourse id(UUID id) {
@@ -449,6 +452,26 @@ public class EnrolledCourse {
     this.enrolledCount = enrolledCount;
   }
 
+  public EnrolledCourse version(Long version) {
+    this.version = version;
+    return this;
+  }
+
+  /**
+   * Versión de control de concurrencia
+   * @return version
+  */
+  @NotNull 
+  @Schema(name = "version", description = "Versión de control de concurrencia", requiredMode = Schema.RequiredMode.REQUIRED)
+  @JsonProperty("version")
+  public Long getVersion() {
+    return version;
+  }
+
+  public void setVersion(Long version) {
+    this.version = version;
+  }
+
   public EnrolledCourse progress(Integer progress) {
     this.progress = progress;
     return this;
@@ -557,6 +580,7 @@ public class EnrolledCourse {
         Objects.equals(this.instructor, enrolledCourse.instructor) &&
         Objects.equals(this.syllabus, enrolledCourse.syllabus) &&
         Objects.equals(this.enrolledCount, enrolledCourse.enrolledCount) &&
+        Objects.equals(this.version, enrolledCourse.version) &&
         Objects.equals(this.progress, enrolledCourse.progress) &&
         Objects.equals(this.lastAccessDate, enrolledCourse.lastAccessDate) &&
         Objects.equals(this.enrollmentStatus, enrolledCourse.enrollmentStatus) &&
@@ -569,7 +593,7 @@ public class EnrolledCourse {
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name, description, imageUrl, category, level, price, duration, startDate, endDate, publicationStatus, createdAt, updatedAt, hashCodeNullable(deletedAt), instructor, syllabus, enrolledCount, progress, lastAccessDate, enrollmentStatus, nextLessonId);
+    return Objects.hash(id, name, description, imageUrl, category, level, price, duration, startDate, endDate, publicationStatus, createdAt, updatedAt, hashCodeNullable(deletedAt), instructor, syllabus, enrolledCount, version, progress, lastAccessDate, enrollmentStatus, nextLessonId);
   }
 
   private static <T> int hashCodeNullable(JsonNullable<T> a) {
@@ -600,6 +624,7 @@ public class EnrolledCourse {
     sb.append("    instructor: ").append(toIndentedString(instructor)).append("\n");
     sb.append("    syllabus: ").append(toIndentedString(syllabus)).append("\n");
     sb.append("    enrolledCount: ").append(toIndentedString(enrolledCount)).append("\n");
+    sb.append("    version: ").append(toIndentedString(version)).append("\n");
     sb.append("    progress: ").append(toIndentedString(progress)).append("\n");
     sb.append("    lastAccessDate: ").append(toIndentedString(lastAccessDate)).append("\n");
     sb.append("    enrollmentStatus: ").append(toIndentedString(enrollmentStatus)).append("\n");

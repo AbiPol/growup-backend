@@ -24,7 +24,7 @@ import jakarta.annotation.Generated;
  * User
  */
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2026-02-12T11:59:11.015804600Z[Atlantic/Canary]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2026-02-20T14:24:19.066966500Z[Atlantic/Canary]")
 public class User {
 
   private UUID id;
@@ -44,6 +44,8 @@ public class User {
 
   private String bio;
 
+  private Long version;
+
   public User() {
     super();
   }
@@ -51,12 +53,13 @@ public class User {
   /**
    * Constructor with only required parameters
    */
-  public User(UUID id, String name, String email, Boolean isActive, Role role) {
+  public User(UUID id, String name, String email, Boolean isActive, Role role, Long version) {
     this.id = id;
     this.name = name;
     this.email = email;
     this.isActive = isActive;
     this.role = role;
+    this.version = version;
   }
 
   public User id(UUID id) {
@@ -219,6 +222,26 @@ public class User {
     this.bio = bio;
   }
 
+  public User version(Long version) {
+    this.version = version;
+    return this;
+  }
+
+  /**
+   * Versión de control de concurrencia
+   * @return version
+  */
+  @NotNull 
+  @Schema(name = "version", description = "Versión de control de concurrencia", requiredMode = Schema.RequiredMode.REQUIRED)
+  @JsonProperty("version")
+  public Long getVersion() {
+    return version;
+  }
+
+  public void setVersion(Long version) {
+    this.version = version;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -235,12 +258,13 @@ public class User {
         Objects.equals(this.role, user.role) &&
         Objects.equals(this.avatar, user.avatar) &&
         Objects.equals(this.joinDate, user.joinDate) &&
-        Objects.equals(this.bio, user.bio);
+        Objects.equals(this.bio, user.bio) &&
+        Objects.equals(this.version, user.version);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name, email, isActive, role, avatar, joinDate, bio);
+    return Objects.hash(id, name, email, isActive, role, avatar, joinDate, bio, version);
   }
 
   @Override
@@ -255,6 +279,7 @@ public class User {
     sb.append("    avatar: ").append(toIndentedString(avatar)).append("\n");
     sb.append("    joinDate: ").append(toIndentedString(joinDate)).append("\n");
     sb.append("    bio: ").append(toIndentedString(bio)).append("\n");
+    sb.append("    version: ").append(toIndentedString(version)).append("\n");
     sb.append("}");
     return sb.toString();
   }

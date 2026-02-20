@@ -22,7 +22,7 @@ import jakarta.annotation.Generated;
  * A delegate to be called by the {@link EstudianteApiController}}.
  * Implement this interface with a {@link org.springframework.stereotype.Service} annotated class.
  */
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2026-02-12T11:59:11.015804600Z[Atlantic/Canary]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2026-02-20T14:24:19.066966500Z[Atlantic/Canary]")
 public interface EstudianteApiDelegate {
 
     default Optional<NativeWebRequest> getRequest() {

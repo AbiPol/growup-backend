@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.Optional;
 import jakarta.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2026-02-12T11:46:35.211267200Z[Atlantic/Canary]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2026-02-20T10:35:35.234080800Z[Atlantic/Canary]")
 @Controller
 @RequestMapping("${openapi.aPIDeGrowUp.base-path:/api/v1}")
 public class AdminApiController implements AdminApi {

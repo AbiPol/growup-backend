@@ -1,6 +1,7 @@
 package com.growup.backend.config;
 
-import com.growup.backend.security.JwtAuthenticationFilter;
+import com.growup.backend.infrastructure.security.JwtAuthenticationFilter;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -35,7 +36,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**").permitAll() // Login, Register
+                        .requestMatchers("/api/v1/auth/**").permitAll() // Login, Register
                         .requestMatchers("/docs/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll() // Swagger
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
