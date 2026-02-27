@@ -59,4 +59,14 @@ public class UserService implements UserInPort {
         // En una arquitectura pura, podríamos tener lógica específica aquí
         return getUserById(id);
     }
+
+    @Override
+    public User getUserByEmail(String email) {
+        log.info("GrowUp-Log: UserService - Buscando usuario por email: {}", email);
+        return userPersistencePort.findByEmail(email)
+                .orElseThrow(() -> {
+                    log.error("GrowUp-Log: UserService - Usuario no encontrado: {}", email);
+                    return new ResourceNotFoundException("Usuario no encontrado con email: " + email);
+                });
+    }
 }

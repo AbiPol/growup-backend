@@ -2,32 +2,70 @@ package com.growup.backend.infrastructure.mapper;
 
 import com.growup.backend.domain.model.Enrollment;
 import com.growup.backend.infrastructure.adapter.persistence.jpa.entity.EnrollmentJpaEntity;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import com.growup.backend.model.EnrollmentStatus;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 /**
  * Mapper para convertir entre el modelo de dominio Enrollment y la entidad JPA
  * EnrollmentJpaEntity.
  */
-@Mapper(componentModel = "spring", uses = { UserPersistenceMapper.class, CoursePersistenceMapper.class })
-public interface EnrollmentPersistenceMapper {
+@Component
+@RequiredArgsConstructor
+public class EnrollmentPersistenceMapper {
 
-    @Mapping(target = "enrollmentStatus", expression = "java(mapStatus(entity.getEnrollmentStatus()))")
-    Enrollment toDomain(EnrollmentJpaEntity entity);
+    private final UserPersistenceMapper userMapper;
+    private final CoursePersistenceMapper courseMapper;
 
-    // @Mapping(target = "version", ignore = true)
-    @Mapping(target = "enrollmentStatus", expression = "java(mapStatus(domain.getEnrollmentStatus()))")
-    EnrollmentJpaEntity toEntity(Enrollment domain);
+    /** Convierte una entidad JPA → modelo de dominio */
+    public Enrollment toDomain(EnrollmentJpaEntity entity) {
+        if (entity == null)
+            return null;
 
-    default String mapStatus(com.growup.backend.model.EnrollmentStatus status) {
+        Enrollment enrollment = new Enrollment();
+        enrollment.setId(entity.getId());
+        enrollment.setStudent(userMapper.toDomain(entity.getUser())); // "user" en JPA es "student" en dominio
+        enrollment.setCourse(courseMapper.toDomain(entity.getCourse()));
+        enrollment.setProgress(entity.getProgress());
+        enrollment.setLastAccessDate(entity.getLastAccessDate());
+        enrollment.setEnrollmentStatus(mapStatus(entity.getEnrollmentStatus())); // Enum → String
+        enrollment.setNextLessonId(entity.getNextLessonId());
+        enrollment.setVersion(entity.getVersion());
+        return enrollment;
+    }
+
+    /**
+     * Convierte un modelo de dominio → entidad JPA para guardar en base de datos
+     */
+    public EnrollmentJpaEntity toEntity(Enrollment enrollment) {
+        if (enrollment == null)
+            return null;
+
+        EnrollmentJpaEntity entity = new EnrollmentJpaEntity();
+        entity.setId(enrollment.getId());
+        entity.setUser(userMapper.toEntity(enrollment.getStudent())); // "student" en dominio es "user" en JPA
+        entity.setCourse(courseMapper.toEntity(enrollment.getCourse()));
+        entity.setProgress(enrollment.getProgress());
+        entity.setLastAccessDate(enrollment.getLastAccessDate());
+        entity.setEnrollmentStatus(mapStatus(enrollment.getEnrollmentStatus())); // String → Enum
+        entity.setNextLessonId(enrollment.getNextLessonId());
+        entity.setVersion(enrollment.getVersion() != null ? enrollment.getVersion() : 0L);
+        return entity;
+    }
+
+    // --- Conversión del enum EnrollmentStatus ---
+
+    /** Enum EnrollmentStatus → String para guardar en DB */
+    private String mapStatus(EnrollmentStatus status) {
         return status != null ? status.getValue() : null;
     }
 
-    default com.growup.backend.model.EnrollmentStatus mapStatus(String status) {
+    /** String de la DB → Enum EnrollmentStatus */
+    private EnrollmentStatus mapStatus(String status) {
         if (status == null)
             return null;
         try {
-            return com.growup.backend.model.EnrollmentStatus.fromValue(status);
+            return EnrollmentStatus.fromValue(status);
         } catch (IllegalArgumentException e) {
             return null;
         }

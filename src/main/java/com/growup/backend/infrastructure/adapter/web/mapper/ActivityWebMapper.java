@@ -1,35 +1,61 @@
 package com.growup.backend.infrastructure.adapter.web.mapper;
 
 import com.growup.backend.domain.model.Activity;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import com.growup.backend.model.ActivityType;
+import org.springframework.stereotype.Component;
 
 /**
  * Mapper para convertir entre el modelo de dominio Activity y el DTO de
  * OpenAPI.
  */
-@Mapper(componentModel = "spring")
-public interface ActivityWebMapper {
+@Component
+public class ActivityWebMapper {
 
-    @Mapping(target = "user", source = "user.name")
-    @Mapping(target = "type", expression = "java(mapType(domain.getType()))")
-    com.growup.backend.model.Activity toDto(Activity domain);
+    /** Dominio Activity → DTO Activity (para enviar al frontend) */
+    public com.growup.backend.model.Activity toDto(Activity domain) {
+        if (domain == null)
+            return null;
 
-    @Mapping(target = "user", ignore = true)
-    @Mapping(target = "type", expression = "java(mapType(dto.getType()))")
-    Activity toDomain(com.growup.backend.model.Activity dto);
+        com.growup.backend.model.Activity dto = new com.growup.backend.model.Activity();
+        dto.setId(domain.getId());
+        dto.setUser(domain.getUser() != null ? domain.getUser().getName() : null); // Solo el nombre del usuario
+        dto.setType(mapType(domain.getType())); // String → Enum
+        dto.setAction(domain.getAction());
+        dto.setTarget(domain.getTarget());
+        dto.setTime(domain.getTime());
+        return dto;
+    }
 
-    default com.growup.backend.model.ActivityType mapType(String type) {
+    /** DTO Activity → Dominio Activity (al recibir del frontend) */
+    public Activity toDomain(com.growup.backend.model.Activity dto) {
+        if (dto == null)
+            return null;
+
+        Activity domain = new Activity();
+        domain.setId(dto.getId());
+        domain.setType(mapType(dto.getType())); // Enum → String
+        domain.setAction(dto.getAction());
+        domain.setTarget(dto.getTarget());
+        domain.setTime(dto.getTime());
+        // "user" se ignora: es solo un nombre en el DTO, no un objeto User completo
+        return domain;
+    }
+
+    // ── Conversión del enum ActivityType ────────────────────────────────────
+
+    /** String del dominio → Enum ActivityType del DTO */
+    private ActivityType mapType(String type) {
         if (type == null)
             return null;
         try {
-            return com.growup.backend.model.ActivityType.fromValue(type);
+            return ActivityType.fromValue(type);
         } catch (IllegalArgumentException e) {
             return null;
         }
     }
 
-    default String mapType(com.growup.backend.model.ActivityType type) {
+    /** Enum ActivityType del DTO → String del dominio */
+    private String mapType(ActivityType type) {
         return type != null ? type.getValue() : null;
     }
 }

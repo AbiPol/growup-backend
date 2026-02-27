@@ -20,4 +20,5 @@ public class CourseModule {
     private String title;
     private String description;
     private List<Topic> topics;
+    private Long version;
 }

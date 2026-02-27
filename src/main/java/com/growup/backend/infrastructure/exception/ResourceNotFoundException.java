@@ -1,5 +1,6 @@
 package com.growup.backend.infrastructure.exception;
 
+//import java.nio.file.AccessDeniedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 

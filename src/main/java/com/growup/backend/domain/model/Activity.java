@@ -22,4 +22,5 @@ public class Activity {
     private String target;
     private OffsetDateTime time;
     private String type;
+    private Long version;
 }

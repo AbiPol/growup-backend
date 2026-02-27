@@ -4,6 +4,8 @@ import com.growup.backend.model.CourseLevel;
 import com.growup.backend.model.CourseStatus;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
@@ -16,6 +18,8 @@ import java.util.UUID;
  */
 @Entity
 @Table(name = "courses")
+@SQLDelete(sql = "UPDATE courses SET deleted_at = NOW() WHERE id = ? AND version = ?")
+@SQLRestriction("deleted_at IS NULL")
 @Getter
 @Setter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -84,6 +88,8 @@ public class CourseJpaEntity {
     protected void onCreate() {
         createdAt = OffsetDateTime.now();
         updatedAt = OffsetDateTime.now();
+        startDate = OffsetDateTime.now();
+        deletedAt = null;
         if (enrolledCount == null)
             enrolledCount = 0;
         if (publicationStatus == null)
@@ -96,7 +102,6 @@ public class CourseJpaEntity {
     }
 
     @Version
-    // @Column(name = "version", nullable = false, columnDefinition = "int default
-    // 0")
+    @Builder.Default
     private Long version = 0L;
 }

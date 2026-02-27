@@ -46,8 +46,10 @@ public class AuthService implements AuthInPort {
 
     @Override
     public User register(User user, String password) {
-        log.info("GrowUp-Log: AuthService - Registrando nuevo usuario: {}", user.getEmail());
         // log.info("GrowUp-Log: AuthService - Registrando nuevo usuario: {}", user);
+        // log.info("GrowUp-Log: AuthService - Registrando nuevo usuario: {}",
+        // user.getRole());
+        log.info("GrowUp-Log: AuthService - Registrando nuevo usuario: {}", user);
 
         if (userPersistencePort.findByEmail(user.getEmail()).isPresent()) {
             throw new IllegalArgumentException("El email ya está registrado");
@@ -57,7 +59,7 @@ public class AuthService implements AuthInPort {
         user.setPassword(passwordEncoder.encode(password));
         user.setJoinDate(OffsetDateTime.now());
         user.setIsActive(true);
-        user.setRole(Role.STUDENT); // Default role
+        user.setRole(user.getRole()); // Default role
         user.setVersion(0L);
 
         return userPersistencePort.save(user);

@@ -20,7 +20,7 @@ import jakarta.annotation.Generated;
  */
 
 @JsonTypeName("_admin_users__id__status_patch_request")
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2026-02-20T14:24:19.066966500Z[Atlantic/Canary]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2026-02-27T09:40:28.900756900Z[Atlantic/Canary]")
 public class AdminUsersIdStatusPatchRequest {
 
   private Boolean isActive;

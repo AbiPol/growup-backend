@@ -1,35 +1,65 @@
 package com.growup.backend.infrastructure.adapter.web.mapper;
 
 import com.growup.backend.domain.model.Notification;
-import org.mapstruct.Mapper;
+import com.growup.backend.model.NotificationType;
+import org.springframework.stereotype.Component;
 
 /**
  * Mapper para convertir entre el modelo de dominio Notification y el DTO de
  * OpenAPI.
  */
-@Mapper(componentModel = "spring")
-public interface NotificationWebMapper {
+@Component
+public class NotificationWebMapper {
 
-    @org.mapstruct.Mapping(target = "userId", source = "user.id")
-    @org.mapstruct.Mapping(target = "type", expression = "java(mapType(domain.getType()))")
-    com.growup.backend.model.Notification toDto(Notification domain);
+    /** Dominio Notification → DTO Notification (para enviar al frontend) */
+    public com.growup.backend.model.Notification toDto(Notification domain) {
+        if (domain == null)
+            return null;
 
-    @org.mapstruct.Mapping(target = "user.id", source = "userId")
-    @org.mapstruct.Mapping(target = "type", expression = "java(mapType(dto.getType()))")
-    @org.mapstruct.Mapping(target = "user", ignore = true) // Ignored complex user object, handled by service if needed
-    Notification toDomain(com.growup.backend.model.Notification dto);
+        com.growup.backend.model.Notification dto = new com.growup.backend.model.Notification();
+        dto.setId(domain.getId());
+        dto.setUserId(domain.getUser() != null ? domain.getUser().getId() : null); // Solo el ID
+        dto.setTitle(domain.getTitle());
+        dto.setMessage(domain.getMessage());
+        dto.setType(mapType(domain.getType())); // String → Enum
+        dto.setRead(domain.getRead());
+        dto.setDate(domain.getDate());
+        dto.setLink(domain.getLink());
+        return dto;
+    }
 
-    default com.growup.backend.model.NotificationType mapType(String type) {
+    /** DTO Notification → Dominio Notification (al recibir del frontend) */
+    public Notification toDomain(com.growup.backend.model.Notification dto) {
+        if (dto == null)
+            return null;
+
+        Notification domain = new Notification();
+        domain.setId(dto.getId());
+        domain.setTitle(dto.getTitle());
+        domain.setMessage(dto.getMessage());
+        domain.setType(mapType(dto.getType())); // Enum → String
+        domain.setRead(dto.getRead());
+        domain.setDate(dto.getDate());
+        domain.setLink(dto.getLink());
+        // "user" se ignora: el servicio lo carga por userId si fuera necesario
+        return domain;
+    }
+
+    // ── Conversión del enum NotificationType ────────────────────────────────
+
+    /** String del dominio → Enum NotificationType del DTO */
+    private NotificationType mapType(String type) {
         if (type == null)
             return null;
         try {
-            return com.growup.backend.model.NotificationType.fromValue(type);
+            return NotificationType.fromValue(type);
         } catch (IllegalArgumentException e) {
             return null;
         }
     }
 
-    default String mapType(com.growup.backend.model.NotificationType type) {
+    /** Enum NotificationType del DTO → String del dominio */
+    private String mapType(NotificationType type) {
         return type != null ? type.getValue() : null;
     }
 }

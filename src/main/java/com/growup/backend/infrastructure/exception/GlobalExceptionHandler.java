@@ -9,6 +9,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import org.springframework.security.access.AccessDeniedException;
 import java.time.OffsetDateTime;
 import java.util.stream.Collectors;
 
@@ -20,6 +21,12 @@ import java.util.stream.Collectors;
 @ControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(AccessDeniedException.class)
+    private ResponseEntity<ErrorResponse> handleForbidden(AccessDeniedException ex) {
+        log.error("GrowUp-Log: GlobalExceptionHandler - Acceso denegado: {}", ex.getMessage());
+        return buildResponse(HttpStatus.FORBIDDEN, "No tienes permisos para realizar esta acción");
+    }
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleNotFound(ResourceNotFoundException ex) {
@@ -65,4 +72,5 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(error, status);
     }
+
 }

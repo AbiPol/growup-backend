@@ -11,6 +11,8 @@ import java.util.UUID;
 public interface UserInPort {
     User getUserById(UUID id);
 
+    User getUserByEmail(String email);
+
     List<User> getAllUsers();
 
     User updateUser(UUID id, User user);

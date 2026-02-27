@@ -3,6 +3,8 @@ package com.growup.backend.infrastructure.adapter.persistence.jpa.entity;
 import com.growup.backend.model.ActivityType;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -12,6 +14,8 @@ import java.util.UUID;
  */
 @Entity
 @Table(name = "activities")
+@SQLDelete(sql = "UPDATE activities SET deleted_at = NOW() WHERE id = ? AND version = ?")
+@SQLRestriction("deleted_at IS NULL")
 @Getter
 @Setter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -42,10 +46,27 @@ public class ActivityJpaEntity {
     @Column(nullable = false)
     private ActivityType type;
 
+    @Column(name = "updated_at")
+    private OffsetDateTime updatedAt;
+
+    @Column(name = "deleted_at")
+    private OffsetDateTime deletedAt;
+
     @PrePersist
     protected void onCreate() {
         if (time == null) {
             time = OffsetDateTime.now();
         }
+        updatedAt = OffsetDateTime.now();
+        deletedAt = null;
     }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = OffsetDateTime.now();
+    }
+
+    @Version
+    @Builder.Default
+    private Long version = 0L;
 }

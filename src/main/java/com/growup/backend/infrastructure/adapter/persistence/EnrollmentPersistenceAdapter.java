@@ -57,6 +57,8 @@ public class EnrollmentPersistenceAdapter implements EnrollmentPersistencePort {
 
     @Override
     public void deleteById(UUID id) {
+        // Gracias a las anotaciones @SQLDelete en EnrollmentJpaEntity, esto realiza un
+        // borrado lógico.
         enrollmentRepository.deleteById(id);
     }
 

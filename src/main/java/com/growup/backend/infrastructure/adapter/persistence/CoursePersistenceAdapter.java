@@ -3,8 +3,11 @@ package com.growup.backend.infrastructure.adapter.persistence;
 import com.growup.backend.domain.port.out.CoursePersistencePort;
 import com.growup.backend.domain.model.Course;
 import com.growup.backend.infrastructure.adapter.persistence.jpa.repository.CourseJpaRepository;
+import com.growup.backend.infrastructure.exception.ResourceNotFoundException;
 import com.growup.backend.infrastructure.mapper.CoursePersistenceMapper;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -25,6 +28,9 @@ public class CoursePersistenceAdapter implements CoursePersistencePort {
     @Override
     public Course save(Course course) {
         var entity = courseMapper.toEntity(course);
+        if (entity == null) {
+            throw new ResourceNotFoundException("Curso no encontrado en BBDD");
+        }
         var savedEntity = courseRepository.save(entity);
         return courseMapper.toDomain(savedEntity);
     }
@@ -57,18 +63,26 @@ public class CoursePersistenceAdapter implements CoursePersistencePort {
 
     @Override
     public void deleteById(UUID id) {
-        courseRepository.deleteById(id);
+        if (id != null) {
+            // Gracias a las anotaciones @SQLDelete en CourseJpaEntity, esto realiza un
+            // borrado lógico.
+            courseRepository.deleteById(id);
+        }
     }
 
     @Override
     public List<Course> findByFilters(String category, String level, String status) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findByFilters'");
+        return courseRepository.findByCategory(category).stream()
+                .filter(course -> level == null || course.getLevel().toString().equalsIgnoreCase(level))
+                .map(courseMapper::toDomain)
+                .filter(course -> status == null || course.getPublicationStatus().toString().equalsIgnoreCase(status))
+                .collect(Collectors.toList());
     }
 
     @Override
     public void delete(UUID id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'delete'");
+        if (id != null) {
+            deleteById(id);
+        }
     }
 }

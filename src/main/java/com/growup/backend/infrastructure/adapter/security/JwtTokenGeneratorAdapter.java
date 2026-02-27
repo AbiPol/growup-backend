@@ -18,6 +18,6 @@ public class JwtTokenGeneratorAdapter implements TokenGeneratorPort {
 
     @Override
     public String generateToken(User user) {
-        return jwtProvider.generateToken(user.getEmail());
+        return jwtProvider.generateToken(user);
     }
 }
