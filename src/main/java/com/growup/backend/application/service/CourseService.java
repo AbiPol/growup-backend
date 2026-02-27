@@ -28,7 +28,12 @@ public class CourseService implements CourseInPort {
     @Override
     public List<Course> getAllCourses(String category, String level, String status) {
         log.info("GrowUp-Log: CourseService - Listando cursos con filtros");
-        return coursePersistencePort.findByFilters(category, level, status);
+        List<Course> courses = coursePersistencePort.findByFilters(category, level, status);
+
+        if (courses.isEmpty()) {
+            throw new ResourceNotFoundException("Cursos no encontrados");
+        }
+        return courses;
     }
 
     @Override
@@ -45,6 +50,7 @@ public class CourseService implements CourseInPort {
         User instructor = userPersistencePort.findById(instructorId)
                 .orElseThrow(() -> new ResourceNotFoundException("Instructor no encontrado"));
 
+        log.info("GrowUp-Log: CourseService - Instructor encontrado: {}", instructor);
         course.setInstructor(instructor);
         return coursePersistencePort.save(course);
     }
@@ -54,18 +60,70 @@ public class CourseService implements CourseInPort {
         log.info("GrowUp-Log: CourseService - Actualizando curso: {}", id);
         Course existing = getCourseById(id);
 
-        // Mapeo manual de campos (o delegar en un mapper de dominio)
-        existing.setName(course.getName());
-        existing.setDescription(course.getDescription());
-        existing.setImageUrl(course.getImageUrl());
-        existing.setCategory(course.getCategory());
-        existing.setLevel(course.getLevel());
-        existing.setPrice(course.getPrice());
-        existing.setDuration(course.getDuration());
-        existing.setPublicationStatus(course.getPublicationStatus());
-        existing.setStartDate(course.getStartDate());
-        existing.setEndDate(course.getEndDate());
-        existing.setSyllabus(course.getSyllabus());
+        if (course.getName() != null && !course.getName().equals(existing.getName())) {
+            existing.setName(course.getName());
+        }
+        if (course.getDescription() != null && !course.getDescription().equals(existing.getDescription())) {
+            existing.setDescription(course.getDescription());
+        }
+        if (course.getImageUrl() != null && !course.getImageUrl().equals(existing.getImageUrl())) {
+            existing.setImageUrl(course.getImageUrl());
+        }
+        if (course.getCategory() != null && !course.getCategory().equals(existing.getCategory())) {
+            existing.setCategory(course.getCategory());
+        }
+        if (course.getLevel() != null && !course.getLevel().equals(existing.getLevel())) {
+            existing.setLevel(course.getLevel());
+        }
+        if (course.getPrice() != null && !course.getPrice().equals(existing.getPrice())) {
+            existing.setPrice(course.getPrice());
+        }
+        if (course.getDuration() != null && !course.getDuration().equals(existing.getDuration())) {
+            existing.setDuration(course.getDuration());
+        }
+        if (course.getPublicationStatus() != null
+                && !course.getPublicationStatus().equals(existing.getPublicationStatus())) {
+            existing.setPublicationStatus(course.getPublicationStatus());
+        }
+        if (course.getStartDate() != null && !course.getStartDate().equals(existing.getStartDate())) {
+            existing.setStartDate(course.getStartDate());
+        }
+        if (course.getEndDate() != null && !course.getEndDate().equals(existing.getEndDate())) {
+            existing.setEndDate(course.getEndDate());
+        }
+        if (course.getSyllabus() != null && !course.getSyllabus().isEmpty()
+                && !course.getSyllabus().equals(existing.getSyllabus())) {
+
+            // Re-apply fix: Transfer versions from existing to avoid Hibernate detached
+            // entity version null error
+            course.getSyllabus().forEach(newModule -> {
+                if (newModule.getId() != null) {
+                    existing.getSyllabus().stream()
+                            .filter(m -> newModule.getId().equals(m.getId()))
+                            .findFirst()
+                            .ifPresent(existingModule -> newModule.setVersion(existingModule.getVersion()));
+                } else if (newModule.getVersion() == null) {
+                    newModule.setVersion(0L);
+                }
+
+                if (newModule.getTopics() != null) {
+                    newModule.getTopics().forEach(newTopic -> {
+                        if (newTopic.getId() != null) {
+                            existing.getSyllabus().stream()
+                                    .filter(m -> m.getTopics() != null)
+                                    .flatMap(m -> m.getTopics().stream())
+                                    .filter(t -> newTopic.getId().equals(t.getId()))
+                                    .findFirst()
+                                    .ifPresent(existingTopic -> newTopic.setVersion(existingTopic.getVersion()));
+                        } else if (newTopic.getVersion() == null) {
+                            newTopic.setVersion(0L);
+                        }
+                    });
+                }
+            });
+
+            existing.setSyllabus(course.getSyllabus());
+        }
 
         return coursePersistencePort.save(existing);
     }
@@ -79,6 +137,10 @@ public class CourseService implements CourseInPort {
     @Override
     public List<Course> getCoursesByInstructor(UUID instructorId) {
         log.info("GrowUp-Log: CourseService - Listando cursos del instructor: {}", instructorId);
-        return coursePersistencePort.findByInstructorId(instructorId);
+        List<Course> courses = coursePersistencePort.findByInstructorId(instructorId);
+        if (courses.isEmpty()) {
+            throw new ResourceNotFoundException("El instructor con ID: " + instructorId + " no tiene cursos");
+        }
+        return courses;
     }
 }

@@ -38,7 +38,9 @@ public class AutenticacinWebAdapter implements AutenticacinApiDelegate {
 
     @Override
     public ResponseEntity<AuthResponse> authRegisterPost(RegisterRequest registerRequest) {
+        log.info("GrowUp-Log: AutenticacinWebAdapter - Registrando usuario: {}", registerRequest);
         var domainUser = userMapper.toDomain(registerRequest);
+        log.info("GrowUp-Log: AutenticacinWebAdapter - Registrando usuario: {}", domainUser);
         var createdUser = authInPort.register(domainUser, registerRequest.getPassword());
         var token = authInPort.generateToken(createdUser);
 

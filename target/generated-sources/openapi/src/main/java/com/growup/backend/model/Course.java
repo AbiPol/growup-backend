@@ -33,7 +33,7 @@ import jakarta.annotation.Generated;
  * Course
  */
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2026-02-20T14:24:19.066966500Z[Atlantic/Canary]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2026-02-27T09:40:28.900756900Z[Atlantic/Canary]")
 public class Course {
 
   private UUID id;
@@ -85,13 +85,11 @@ public class Course {
   /**
    * Constructor with only required parameters
    */
-  public Course(UUID id, String name, String category, Double price, CourseStatus publicationStatus, Long version) {
-    this.id = id;
+  public Course(String name, String category, Double price, CourseStatus publicationStatus) {
     this.name = name;
     this.category = category;
     this.price = price;
     this.publicationStatus = publicationStatus;
-    this.version = version;
   }
 
   public Course id(UUID id) {
@@ -103,8 +101,8 @@ public class Course {
    * Identificador único del curso
    * @return id
   */
-  @NotNull @Valid 
-  @Schema(name = "id", description = "Identificador único del curso", requiredMode = Schema.RequiredMode.REQUIRED)
+  @Valid 
+  @Schema(name = "id", description = "Identificador único del curso", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("id")
   public UUID getId() {
     return id;
@@ -451,8 +449,8 @@ public class Course {
    * Versión de control de concurrencia
    * @return version
   */
-  @NotNull 
-  @Schema(name = "version", description = "Versión de control de concurrencia", requiredMode = Schema.RequiredMode.REQUIRED)
+  
+  @Schema(name = "version", description = "Versión de control de concurrencia", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("version")
   public Long getVersion() {
     return version;

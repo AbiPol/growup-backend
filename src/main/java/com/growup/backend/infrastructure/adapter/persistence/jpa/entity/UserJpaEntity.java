@@ -3,6 +3,8 @@ package com.growup.backend.infrastructure.adapter.persistence.jpa.entity;
 import com.growup.backend.domain.model.Role;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -12,6 +14,8 @@ import java.util.UUID;
  */
 @Entity
 @Table(name = "users")
+@SQLDelete(sql = "UPDATE users SET deleted_at = NOW() WHERE id = ? AND version = ?")
+@SQLRestriction("deleted_at IS NULL")
 @Getter
 @Setter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -51,18 +55,28 @@ public class UserJpaEntity {
     @Column(name = "join_date", updatable = false)
     private OffsetDateTime joinDate;
 
+    @Column(name = "updated_at")
+    private OffsetDateTime updatedAt;
+
+    @Column(name = "deleted_at")
+    private OffsetDateTime deletedAt;
+
     @PrePersist
     protected void onCreate() {
-        if (joinDate == null) {
-            joinDate = OffsetDateTime.now();
-        }
+        joinDate = OffsetDateTime.now();
+        updatedAt = OffsetDateTime.now();
+        deletedAt = null;
         if (isActive == null) {
             isActive = true;
         }
     }
 
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = OffsetDateTime.now();
+    }
+
     @Version
-    // @Column(name = "version", nullable = false, columnDefinition = "int default
-    // 0")
+    @Builder.Default
     private Long version = 0L;
 }

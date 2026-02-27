@@ -30,7 +30,7 @@ import java.util.Map;
 import java.util.Optional;
 import jakarta.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2026-02-20T10:35:35.234080800Z[Atlantic/Canary]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2026-02-27T09:40:19.355212400Z[Atlantic/Canary]")
 @Controller
 @RequestMapping("${openapi.aPIDeGrowUp.base-path:/api/v1}")
 public class AutenticacinApiController implements AutenticacinApi {

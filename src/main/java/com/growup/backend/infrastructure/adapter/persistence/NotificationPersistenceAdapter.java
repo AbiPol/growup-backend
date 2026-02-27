@@ -48,6 +48,8 @@ public class NotificationPersistenceAdapter implements NotificationPersistencePo
 
     @Override
     public void deleteById(UUID id) {
+        // Gracias a las anotaciones @SQLDelete en NotificationJpaEntity, esto realiza
+        // un borrado lógico.
         notificationRepository.deleteById(id);
     }
 

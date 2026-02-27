@@ -1,52 +1,102 @@
 package com.growup.backend.infrastructure.adapter.web.mapper;
 
 import com.growup.backend.domain.model.Enrollment;
-import org.mapstruct.Mapper;
+import com.growup.backend.model.CourseLevel;
+import com.growup.backend.model.CourseStatus;
+import com.growup.backend.model.EnrolledCourse;
+import com.growup.backend.model.EnrollmentStatus;
+import com.growup.backend.model.StudentStats;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
 
 /**
- * Mapper para convertir entre el modelo de dominio Enrollment y el DTO
- * EnrolledCourse de OpenAPI.
+ * Mapper manual para inscripciones y estadísticas de estudiante.
  */
-@Mapper(componentModel = "spring", uses = { UserWebMapper.class, CourseWebMapper.class })
-public interface EnrollmentWebMapper {
+@Component
+@RequiredArgsConstructor
+public class EnrollmentWebMapper {
 
-    @org.mapstruct.Mapping(target = "name", source = "course.name")
-    @org.mapstruct.Mapping(target = "description", source = "course.description")
-    @org.mapstruct.Mapping(target = "imageUrl", source = "course.imageUrl")
-    @org.mapstruct.Mapping(target = "category", source = "course.category")
-    @org.mapstruct.Mapping(target = "level", source = "course.level")
-    @org.mapstruct.Mapping(target = "price", source = "course.price")
-    @org.mapstruct.Mapping(target = "duration", source = "course.duration")
-    @org.mapstruct.Mapping(target = "startDate", source = "course.startDate")
-    @org.mapstruct.Mapping(target = "endDate", source = "course.endDate")
-    @org.mapstruct.Mapping(target = "publicationStatus", source = "course.publicationStatus")
-    @org.mapstruct.Mapping(target = "createdAt", source = "course.createdAt")
-    @org.mapstruct.Mapping(target = "updatedAt", source = "course.updatedAt")
-    @org.mapstruct.Mapping(target = "deletedAt", ignore = true)
-    @org.mapstruct.Mapping(target = "instructor", source = "course.instructor")
-    @org.mapstruct.Mapping(target = "syllabus", source = "course.syllabus")
-    @org.mapstruct.Mapping(target = "enrolledCount", source = "course.enrolledCount")
-    com.growup.backend.model.EnrolledCourse toDto(Enrollment domain);
+    private final UserWebMapper userMapper;
 
-    @org.mapstruct.Mapping(target = "course.name", source = "name")
-    @org.mapstruct.Mapping(target = "course.description", source = "description")
-    @org.mapstruct.Mapping(target = "course.imageUrl", source = "imageUrl")
-    @org.mapstruct.Mapping(target = "course.category", source = "category")
-    @org.mapstruct.Mapping(target = "course.level", source = "level")
-    @org.mapstruct.Mapping(target = "course.price", source = "price")
-    @org.mapstruct.Mapping(target = "course.duration", source = "duration")
-    @org.mapstruct.Mapping(target = "course.startDate", source = "startDate")
-    @org.mapstruct.Mapping(target = "course.endDate", source = "endDate")
-    @org.mapstruct.Mapping(target = "course.publicationStatus", source = "publicationStatus")
-    @org.mapstruct.Mapping(target = "course.createdAt", source = "createdAt")
-    @org.mapstruct.Mapping(target = "course.updatedAt", source = "updatedAt")
-    @org.mapstruct.Mapping(target = "course.instructor", source = "instructor")
-    @org.mapstruct.Mapping(target = "course.syllabus", source = "syllabus")
-    @org.mapstruct.Mapping(target = "course.enrolledCount", source = "enrolledCount")
-    @org.mapstruct.Mapping(target = "course.version", ignore = true)
-    @org.mapstruct.Mapping(target = "student", ignore = true)
-    @org.mapstruct.Mapping(target = "version", ignore = true)
-    Enrollment toDomain(com.growup.backend.model.EnrolledCourse dto);
+    /** Dominio Enrollment -> DTO EnrolledCourse (aplanando datos del curso) */
+    public EnrolledCourse toDto(Enrollment domain) {
+        if (domain == null)
+            return null;
 
-    com.growup.backend.model.StudentStats toStatsDto(com.growup.backend.domain.model.StudentStats domain);
+        EnrolledCourse dto = new EnrolledCourse();
+        dto.setId(domain.getId());
+        dto.setProgress(domain.getProgress());
+        dto.setLastAccessDate(domain.getLastAccessDate());
+        dto.setEnrollmentStatus(mapToModelEnrollmentStatus(domain.getEnrollmentStatus()));
+        dto.setNextLessonId(domain.getNextLessonId());
+
+        if (domain.getCourse() != null) {
+            dto.setName(domain.getCourse().getName());
+            dto.setDescription(domain.getCourse().getDescription());
+            dto.setImageUrl(domain.getCourse().getImageUrl());
+            dto.setCategory(domain.getCourse().getCategory());
+            dto.setLevel(mapToModelCourseLevel(domain.getCourse().getLevel()));
+            dto.setPrice(domain.getCourse().getPrice());
+            dto.setDuration(domain.getCourse().getDuration());
+            dto.setStartDate(domain.getCourse().getStartDate());
+            dto.setEndDate(domain.getCourse().getEndDate());
+            dto.setPublicationStatus(mapToModelCourseStatus(domain.getCourse().getPublicationStatus()));
+            dto.setCreatedAt(domain.getCourse().getCreatedAt());
+            dto.setUpdatedAt(domain.getCourse().getUpdatedAt());
+            dto.setInstructor(userMapper.toInstructorDto(domain.getCourse().getInstructor()));
+            dto.setEnrolledCount(domain.getCourse().getEnrolledCount());
+            dto.setSyllabus(new ArrayList<>());
+        }
+
+        return dto;
+    }
+
+    /** Dominio StudentStats -> DTO StudentStats */
+    public StudentStats toStatsDto(com.growup.backend.domain.model.StudentStats domain) {
+        if (domain == null)
+            return null;
+
+        StudentStats dto = new StudentStats();
+        dto.setActiveCoursesCount(domain.getActiveCoursesCount());
+        dto.setCompletedCoursesCount(domain.getCompletedCoursesCount());
+        dto.setCertificatesEarned(domain.getCertificatesEarned());
+        dto.setTotalHoursLearning(domain.getTotalHoursLearning());
+        dto.setAverageScore(domain.getAverageScore());
+        dto.setLearningStreakDays(domain.getLearningStreakDays());
+        return dto;
+    }
+
+    // --- Auxiliares de conversión Enum ---
+
+    private EnrollmentStatus mapToModelEnrollmentStatus(String status) {
+        if (status == null)
+            return null;
+        try {
+            return EnrollmentStatus.fromValue(status);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private CourseLevel mapToModelCourseLevel(String level) {
+        if (level == null)
+            return null;
+        try {
+            return CourseLevel.fromValue(level);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private CourseStatus mapToModelCourseStatus(String status) {
+        if (status == null)
+            return null;
+        try {
+            return CourseStatus.fromValue(status);
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }

@@ -2,6 +2,10 @@ package com.growup.backend.infrastructure.adapter.persistence.jpa.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+
+import java.time.OffsetDateTime;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +16,8 @@ import java.util.UUID;
  */
 @Entity
 @Table(name = "course_modules")
+@SQLDelete(sql = "UPDATE course_modules SET deleted_at = NOW() WHERE id = ? AND version = ?")
+@SQLRestriction("deleted_at IS NULL")
 @Getter
 @Setter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -35,8 +41,32 @@ public class CourseModuleJpaEntity {
     @JoinColumn(name = "course_id", nullable = false)
     private CourseJpaEntity course;
 
-    @ElementCollection
-    @CollectionTable(name = "module_topics", joinColumns = @JoinColumn(name = "module_id"))
+    @OneToMany(mappedBy = "module", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<TopicJpaEntity> topics = new ArrayList<>();
+
+    @Column(name = "created_at", updatable = false)
+    private OffsetDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private OffsetDateTime updatedAt;
+
+    @Column(name = "deleted_at")
+    private OffsetDateTime deletedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = OffsetDateTime.now();
+        updatedAt = OffsetDateTime.now();
+        deletedAt = null;
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = OffsetDateTime.now();
+    }
+
+    @Version
+    @Builder.Default
+    private Long version = 0L;
 }

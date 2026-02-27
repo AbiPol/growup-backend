@@ -3,6 +3,8 @@ package com.growup.backend.infrastructure.adapter.persistence.jpa.entity;
 import com.growup.backend.model.NotificationType;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -12,6 +14,8 @@ import java.util.UUID;
  */
 @Entity
 @Table(name = "notifications")
+@SQLDelete(sql = "UPDATE notifications SET deleted_at = NOW() WHERE id = ? AND version = ?")
+@SQLRestriction("deleted_at IS NULL")
 @Getter
 @Setter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -48,11 +52,28 @@ public class NotificationJpaEntity {
 
     private String link;
 
+    @Column(name = "updated_at")
+    private OffsetDateTime updatedAt;
+
+    @Column(name = "deleted_at")
+    private OffsetDateTime deletedAt;
+
     @PrePersist
     protected void onCreate() {
         if (date == null)
             date = OffsetDateTime.now();
+        updatedAt = OffsetDateTime.now();
+        deletedAt = null;
         if (read == null)
             read = false;
     }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = OffsetDateTime.now();
+    }
+
+    @Version
+    @Builder.Default
+    private Long version = 0L;
 }

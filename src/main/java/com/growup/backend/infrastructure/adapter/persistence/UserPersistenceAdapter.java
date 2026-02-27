@@ -51,6 +51,8 @@ public class UserPersistenceAdapter implements UserPersistencePort {
 
     @Override
     public void deleteById(UUID id) {
+        // Gracias a las anotaciones @SQLDelete en UserJpaEntity, esto realiza un
+        // borrado lógico.
         userRepository.deleteById(id);
     }
 

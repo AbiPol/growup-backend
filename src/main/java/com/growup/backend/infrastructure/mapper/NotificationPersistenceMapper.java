@@ -2,47 +2,87 @@ package com.growup.backend.infrastructure.mapper;
 
 import com.growup.backend.domain.model.Notification;
 import com.growup.backend.infrastructure.adapter.persistence.jpa.entity.NotificationJpaEntity;
-import org.mapstruct.Mapper;
+import com.growup.backend.model.NotificationType;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 /**
  * Mapper para convertir entre el modelo de dominio Notification y la entidad
  * JPA NotificationJpaEntity.
  */
-@Mapper(componentModel = "spring", uses = { UserPersistenceMapper.class })
-public interface NotificationPersistenceMapper {
+@Component
+@RequiredArgsConstructor
+public class NotificationPersistenceMapper {
 
-    @org.mapstruct.Mapping(target = "type", expression = "java(mapType(entity.getType()))")
-    Notification toDomain(NotificationJpaEntity entity);
+    private final UserPersistenceMapper userMapper;
 
-    @org.mapstruct.Mapping(target = "type", expression = "java(mapType(domain.getType()))")
-    NotificationJpaEntity toEntity(Notification domain);
-
-    default java.net.URI map(String value) {
-        if (value == null || value.isEmpty()) {
+    /** Convierte una entidad JPA → modelo de dominio */
+    public Notification toDomain(NotificationJpaEntity entity) {
+        if (entity == null)
             return null;
-        }
+
+        Notification notification = new Notification();
+        notification.setId(entity.getId());
+        notification.setUser(userMapper.toDomain(entity.getUser()));
+        notification.setTitle(entity.getTitle());
+        notification.setMessage(entity.getMessage());
+        notification.setType(mapType(entity.getType())); // String → Enum
+        notification.setRead(entity.getRead());
+        notification.setDate(entity.getDate());
+        notification.setLink(toUri(entity.getLink()));
+        notification.setVersion(entity.getVersion());
+        return notification;
+    }
+
+    /**
+     * Convierte un modelo de dominio → entidad JPA para guardar en base de datos
+     */
+    public NotificationJpaEntity toEntity(Notification domain) {
+        if (domain == null)
+            return null;
+
+        NotificationJpaEntity entity = new NotificationJpaEntity();
+        entity.setId(domain.getId());
+        entity.setUser(userMapper.toEntity(domain.getUser()));
+        entity.setTitle(domain.getTitle());
+        entity.setMessage(domain.getMessage());
+        entity.setType(mapType(domain.getType())); // Enum → String
+        entity.setRead(domain.getRead());
+        entity.setDate(domain.getDate());
+        entity.setLink(toString(domain.getLink()));
+        entity.setVersion(domain.getVersion() != null ? domain.getVersion() : 0L);
+        return entity;
+    }
+
+    // --- Métodos URI y Enum ---
+
+    private java.net.URI toUri(String value) {
+        if (value == null || value.isBlank())
+            return null;
         try {
             return java.net.URI.create(value);
-        } catch (IllegalArgumentException e) {
+        } catch (Exception e) {
             return null;
         }
     }
 
-    default String map(java.net.URI value) {
+    private String toString(java.net.URI value) {
         return value != null ? value.toString() : null;
     }
 
-    default String mapType(com.growup.backend.model.NotificationType type) {
-        return type != null ? type.getValue() : null;
-    }
-
-    default com.growup.backend.model.NotificationType mapType(String type) {
+    /** String guardado en DB → enum del dominio */
+    private NotificationType mapType(String type) {
         if (type == null)
             return null;
         try {
-            return com.growup.backend.model.NotificationType.fromValue(type);
+            return NotificationType.fromValue(type);
         } catch (IllegalArgumentException e) {
             return null;
         }
+    }
+
+    /** Enum del dominio → String para guardar en DB */
+    private String mapType(NotificationType type) {
+        return type != null ? type.getValue() : null;
     }
 }

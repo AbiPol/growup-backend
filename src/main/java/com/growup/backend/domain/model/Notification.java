@@ -25,4 +25,5 @@ public class Notification {
     private Boolean read;
     private String type;
     private URI link;
+    private Long version;
 }

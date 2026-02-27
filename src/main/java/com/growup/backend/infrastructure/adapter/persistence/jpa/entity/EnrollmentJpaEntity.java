@@ -3,6 +3,8 @@ package com.growup.backend.infrastructure.adapter.persistence.jpa.entity;
 import com.growup.backend.model.EnrollmentStatus;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -12,6 +14,8 @@ import java.util.UUID;
  */
 @Entity
 @Table(name = "enrollments", uniqueConstraints = @UniqueConstraint(columnNames = { "user_id", "course_id" }))
+@SQLDelete(sql = "UPDATE enrollments SET deleted_at = NOW() WHERE id = ? AND version = ?")
+@SQLRestriction("deleted_at IS NULL")
 @Getter
 @Setter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -48,8 +52,20 @@ public class EnrollmentJpaEntity {
     @Column(name = "next_lesson_id")
     private UUID nextLessonId;
 
+    @Column(name = "created_at", updatable = false)
+    private OffsetDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private OffsetDateTime updatedAt;
+
+    @Column(name = "deleted_at")
+    private OffsetDateTime deletedAt;
+
     @PrePersist
     protected void onCreate() {
+        createdAt = OffsetDateTime.now();
+        updatedAt = OffsetDateTime.now();
+        deletedAt = null;
         if (lastAccessDate == null)
             lastAccessDate = OffsetDateTime.now();
         if (progress == null)
@@ -58,8 +74,12 @@ public class EnrollmentJpaEntity {
             enrollmentStatus = EnrollmentStatus.ACTIVE;
     }
 
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = OffsetDateTime.now();
+    }
+
     @Version
-    // @Column(name = "version", nullable = false, columnDefinition = "int default
-    // 0")
+    @Builder.Default
     private Long version = 0L;
 }

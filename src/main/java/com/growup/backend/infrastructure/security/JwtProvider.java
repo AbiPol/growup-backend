@@ -1,9 +1,9 @@
 package com.growup.backend.infrastructure.security;
 
+import com.growup.backend.domain.model.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
@@ -57,13 +57,14 @@ public class JwtProvider {
 
     // Sobrecarga para generar token desde username directamente (útil para login
     // manual)
-    public String generateToken(String email) {
+    public String generateToken(User user) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + expiration);
 
         return Jwts.builder()
-                .setId(email)
-                .setSubject(email)
+                .setSubject(user.getId().toString()) // Usamos el UUID como Subject
+                .claim("email", user.getEmail()) // El email lo guardamos como un claim extra
+                .claim("role", user.getRole().name()) // ¡Incluso el rol!
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(key, SignatureAlgorithm.HS256)
@@ -71,17 +72,25 @@ public class JwtProvider {
     }
 
     public String getEmailFromToken(String token) {
-        Claims claims = Jwts.parserBuilder()
+        Claims claims = getAllClaims(token);
+        return claims.get("email", String.class);
+    }
+
+    public String getSubjectFromToken(String token) {
+        return getAllClaims(token).getSubject();
+    }
+
+    private Claims getAllClaims(String token) {
+        return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
-
-        return claims.getSubject();
     }
 
     public boolean validateToken(String token) {
         try {
+            // System.out.println("GrowUp-Log: JwtProvider - Validando token: " + token);
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
         } catch (JwtException e) {
