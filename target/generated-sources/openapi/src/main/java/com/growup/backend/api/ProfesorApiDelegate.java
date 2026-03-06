@@ -6,6 +6,7 @@ import com.growup.backend.model.CourseItem;
 import com.growup.backend.model.CoursePerformance;
 import com.growup.backend.model.DashboardStats;
 import com.growup.backend.model.RevenueData;
+import com.growup.backend.model.Review;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ import jakarta.annotation.Generated;
  * A delegate to be called by the {@link ProfesorApiController}}.
  * Implement this interface with a {@link org.springframework.stereotype.Service} annotated class.
  */
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2026-02-27T09:40:28.900756900Z[Atlantic/Canary]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2026-03-06T08:44:02.779102800Z[Atlantic/Canary]")
 public interface ProfesorApiDelegate {
 
     default Optional<NativeWebRequest> getRequest() {
@@ -149,6 +150,27 @@ public interface ProfesorApiDelegate {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
                     String exampleString = "{ \"monthlyRevenue\" : 5.962133916683182, \"averageRating\" : 1.4658129805029452, \"totalStudents\" : 0, \"activeCourses\" : 6, \"studentsGrowth\" : 5.637376656633329, \"revenueGrowth\" : 2.3021358869347655 }";
+                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
+                    break;
+                }
+            }
+        });
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
+    }
+
+    /**
+     * GET /teacher/reviews : Obtener reseñas de mis cursos
+     * Obtener lista de todas las reseñas dejadas en los cursos del profesor
+     *
+     * @return Lista de reseñas (status code 200)
+     * @see ProfesorApi#teacherReviewsGet
+     */
+    default ResponseEntity<List<Review>> teacherReviewsGet() {
+        getRequest().ifPresent(request -> {
+            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                    String exampleString = "[ { \"studentId\" : \"046b6c7f-0b8a-43b9-b35d-6489e6daee91\", \"createdAt\" : \"2000-01-23T04:56:07.000+00:00\", \"courseName\" : \"courseName\", \"studentName\" : \"studentName\", \"rating\" : 1, \"comment\" : \"comment\", \"id\" : \"046b6c7f-0b8a-43b9-b35d-6489e6daee91\", \"courseId\" : \"046b6c7f-0b8a-43b9-b35d-6489e6daee91\", \"version\" : 6 }, { \"studentId\" : \"046b6c7f-0b8a-43b9-b35d-6489e6daee91\", \"createdAt\" : \"2000-01-23T04:56:07.000+00:00\", \"courseName\" : \"courseName\", \"studentName\" : \"studentName\", \"rating\" : 1, \"comment\" : \"comment\", \"id\" : \"046b6c7f-0b8a-43b9-b35d-6489e6daee91\", \"courseId\" : \"046b6c7f-0b8a-43b9-b35d-6489e6daee91\", \"version\" : 6 } ]";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }

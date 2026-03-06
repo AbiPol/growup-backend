@@ -23,5 +23,6 @@ public class Enrollment {
     private OffsetDateTime lastAccessDate;
     private String enrollmentStatus;
     private UUID nextLessonId;
+    private OffsetDateTime createdAt;
     private Long version;
 }

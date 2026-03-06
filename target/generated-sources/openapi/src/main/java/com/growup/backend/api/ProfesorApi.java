@@ -11,6 +11,7 @@ import com.growup.backend.model.CourseItem;
 import com.growup.backend.model.CoursePerformance;
 import com.growup.backend.model.DashboardStats;
 import com.growup.backend.model.RevenueData;
+import com.growup.backend.model.Review;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -33,7 +34,7 @@ import java.util.List;
 import java.util.Map;
 import jakarta.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2026-02-27T09:40:28.900756900Z[Atlantic/Canary]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2026-03-06T08:44:02.779102800Z[Atlantic/Canary]")
 @Validated
 @Tag(name = "Profesor", description = "the Profesor API")
 public interface ProfesorApi {
@@ -239,6 +240,39 @@ public interface ProfesorApi {
         
     ) {
         return getDelegate().teacherDashboardStatsGet();
+    }
+
+
+    /**
+     * GET /teacher/reviews : Obtener reseñas de mis cursos
+     * Obtener lista de todas las reseñas dejadas en los cursos del profesor
+     *
+     * @return Lista de reseñas (status code 200)
+     */
+    @Operation(
+        operationId = "teacherReviewsGet",
+        summary = "Obtener reseñas de mis cursos",
+        description = "Obtener lista de todas las reseñas dejadas en los cursos del profesor",
+        tags = { "Profesor" },
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Lista de reseñas", content = {
+                @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Review.class)))
+            })
+        },
+        security = {
+            @SecurityRequirement(name = "BearerAuth")
+        }
+    )
+    @RequestMapping(
+        method = RequestMethod.GET,
+        value = "/teacher/reviews",
+        produces = { "application/json" }
+    )
+    
+    default ResponseEntity<List<Review>> teacherReviewsGet(
+        
+    ) {
+        return getDelegate().teacherReviewsGet();
     }
 
 }

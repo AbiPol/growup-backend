@@ -6,6 +6,7 @@ import com.growup.backend.model.CourseItem;
 import com.growup.backend.model.CoursePerformance;
 import com.growup.backend.model.DashboardStats;
 import com.growup.backend.model.RevenueData;
+import com.growup.backend.model.Review;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,7 @@ import java.util.Map;
 import java.util.Optional;
 import jakarta.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2026-02-27T09:40:19.355212400Z[Atlantic/Canary]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2026-03-05T17:42:11.255411700Z[Atlantic/Canary]")
 @Controller
 @RequestMapping("${openapi.aPIDeGrowUp.base-path:/api/v1}")
 public class ProfesorApiController implements ProfesorApi {

@@ -73,4 +73,18 @@ public class EnrollmentPersistenceAdapter implements EnrollmentPersistencePort {
     public boolean existsByStudentIdAndCourseId(UUID studentId, UUID courseId) {
         return enrollmentRepository.existsByUserIdAndCourseId(studentId, courseId);
     }
+
+    @Override
+    public List<Enrollment> findByInstructorId(UUID instructorId) {
+        return enrollmentRepository.findByCourseInstructorId(instructorId).stream()
+                .map(enrollmentMapper::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Enrollment> findByInstructorIdAndCreatedAtAfter(UUID instructorId, java.time.OffsetDateTime date) {
+        return enrollmentRepository.findByCourseInstructorIdAndCreatedAtAfter(instructorId, date).stream()
+                .map(enrollmentMapper::toDomain)
+                .collect(Collectors.toList());
+    }
 }

@@ -14,7 +14,7 @@ public interface CoursePersistencePort {
 
     List<Course> findAll();
 
-    List<Course> findByFilters(String category, String level, String status);
+    List<Course> findByFilters(UUID instructorId, String category, String level, String status);
 
     List<Course> findByInstructorId(UUID instructorId);
 

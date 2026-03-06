@@ -30,6 +30,7 @@ public class EnrollmentPersistenceMapper {
         enrollment.setLastAccessDate(entity.getLastAccessDate());
         enrollment.setEnrollmentStatus(mapStatus(entity.getEnrollmentStatus())); // Enum → String
         enrollment.setNextLessonId(entity.getNextLessonId());
+        enrollment.setCreatedAt(entity.getCreatedAt());
         enrollment.setVersion(entity.getVersion());
         return enrollment;
     }
@@ -49,6 +50,7 @@ public class EnrollmentPersistenceMapper {
         entity.setLastAccessDate(enrollment.getLastAccessDate());
         entity.setEnrollmentStatus(mapStatus(enrollment.getEnrollmentStatus())); // String → Enum
         entity.setNextLessonId(enrollment.getNextLessonId());
+        entity.setCreatedAt(enrollment.getCreatedAt());
         entity.setVersion(enrollment.getVersion() != null ? enrollment.getVersion() : 0L);
         return entity;
     }

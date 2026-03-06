@@ -26,16 +26,12 @@ public class JwtProvider {
 
     @PostConstruct
     protected void init() {
-        // Si el secreto es corto, lo rellenamos o usamos uno seguro generado si no se
-        // provee
-        // Para este ejemplo básico, usaremos Keys.secretKeyFor si el string es muy
-        // corto,
-        // pero idealmente decodificamos el secret del properties
-        if (secret.length() < 32) {
+        if (secret == null || secret.length() < 32) {
+            log.warn("GrowUp-Log: JwtProvider - Secret is missing or too short, generating random key.");
             key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
         } else {
-            byte[] keyBytes = Base64.getEncoder().encode(secret.getBytes());
-            key = Keys.hmacShaKeyFor(keyBytes);
+            log.info("GrowUp-Log: JwtProvider - Using stable secret key.");
+            key = Keys.hmacShaKeyFor(secret.getBytes());
         }
     }
 
@@ -65,6 +61,8 @@ public class JwtProvider {
                 .setSubject(user.getId().toString()) // Usamos el UUID como Subject
                 .claim("email", user.getEmail()) // El email lo guardamos como un claim extra
                 .claim("role", user.getRole().name()) // ¡Incluso el rol!
+                .claim("name", user.getName()) // ¡Incluso el rol!
+                .claim("isActive", user.getIsActive()) // ¡Incluso el rol!
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(key, SignatureAlgorithm.HS256)

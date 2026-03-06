@@ -9,7 +9,7 @@ import java.util.UUID;
  * Puerto de Entrada para los casos de uso de Cursos.
  */
 public interface CourseInPort {
-    List<Course> getAllCourses(String category, String level, String status);
+    List<Course> getAllCourses(UUID instructorId, String category, String level, String status);
 
     Course getCourseById(UUID id);
 

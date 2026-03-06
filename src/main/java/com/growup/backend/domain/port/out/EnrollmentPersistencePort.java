@@ -25,4 +25,8 @@ public interface EnrollmentPersistencePort {
     Optional<Enrollment> findByUserAndCourse(User user, Course course);
 
     List<Enrollment> findByUserId(UUID userId);
+
+    List<Enrollment> findByInstructorId(UUID instructorId);
+
+    List<Enrollment> findByInstructorIdAndCreatedAtAfter(UUID instructorId, java.time.OffsetDateTime date);
 }

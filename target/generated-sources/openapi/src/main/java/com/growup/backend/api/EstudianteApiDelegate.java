@@ -3,6 +3,7 @@ package com.growup.backend.api;
 import com.growup.backend.model.EnrolledCourse;
 import com.growup.backend.model.ErrorResponse;
 import com.growup.backend.model.Notification;
+import com.growup.backend.model.Review;
 import com.growup.backend.model.StudentStats;
 import java.util.UUID;
 import org.springframework.http.HttpStatus;
@@ -22,7 +23,7 @@ import jakarta.annotation.Generated;
  * A delegate to be called by the {@link EstudianteApiController}}.
  * Implement this interface with a {@link org.springframework.stereotype.Service} annotated class.
  */
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2026-02-27T09:40:28.900756900Z[Atlantic/Canary]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2026-03-06T08:44:02.779102800Z[Atlantic/Canary]")
 public interface EstudianteApiDelegate {
 
     default Optional<NativeWebRequest> getRequest() {
@@ -44,6 +45,32 @@ public interface EstudianteApiDelegate {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
                     String exampleString = "null";
+                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
+                    break;
+                }
+            }
+        });
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
+    }
+
+    /**
+     * POST /courses/{id}/reviews : Valorar un curso
+     * Crear una nueva reseña para un curso en el que el estudiante está inscrito
+     *
+     * @param id ID del curso a valorar (required)
+     * @param review  (required)
+     * @return Reseña creada exitosamente (status code 201)
+     *         or Datos inválidos o estudiante no inscrito (status code 400)
+     *         or Curso no encontrado (status code 404)
+     * @see EstudianteApi#coursesIdReviewsPost
+     */
+    default ResponseEntity<Review> coursesIdReviewsPost(UUID id,
+        Review review) {
+        getRequest().ifPresent(request -> {
+            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                    String exampleString = "{ \"studentId\" : \"046b6c7f-0b8a-43b9-b35d-6489e6daee91\", \"createdAt\" : \"2000-01-23T04:56:07.000+00:00\", \"courseName\" : \"courseName\", \"studentName\" : \"studentName\", \"rating\" : 1, \"comment\" : \"comment\", \"id\" : \"046b6c7f-0b8a-43b9-b35d-6489e6daee91\", \"courseId\" : \"046b6c7f-0b8a-43b9-b35d-6489e6daee91\", \"version\" : 6 }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }
