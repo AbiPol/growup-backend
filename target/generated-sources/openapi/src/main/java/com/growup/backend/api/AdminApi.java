@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Map;
 import jakarta.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2026-02-27T09:40:28.900756900Z[Atlantic/Canary]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2026-03-06T08:44:02.779102800Z[Atlantic/Canary]")
 @Validated
 @Tag(name = "Admin", description = "the Admin API")
 public interface AdminApi {

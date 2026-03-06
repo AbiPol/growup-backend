@@ -26,14 +26,14 @@ public class CourseService implements CourseInPort {
     private final UserPersistencePort userPersistencePort;
 
     @Override
-    public List<Course> getAllCourses(String category, String level, String status) {
-        log.info("GrowUp-Log: CourseService - Listando cursos con filtros");
-        List<Course> courses = coursePersistencePort.findByFilters(category, level, status);
+    public List<Course> getAllCourses(UUID instructorId, String category, String level, String status) {
+        String cat = (category == null || category.trim().isEmpty()) ? null : category;
+        String lev = (level == null || level.trim().isEmpty()) ? null : level;
+        String sta = (status == null || status.trim().isEmpty()) ? null : status;
 
-        if (courses.isEmpty()) {
-            throw new ResourceNotFoundException("Cursos no encontrados");
-        }
-        return courses;
+        log.info("GrowUp-Log: CourseService - Listando cursos con filtros optimizados para instructor {}: {}, {}, {}",
+                instructorId, cat, lev, sta);
+        return coursePersistencePort.findByFilters(instructorId, cat, lev, sta);
     }
 
     @Override

@@ -1,16 +1,16 @@
 package com.growup.backend.infrastructure.adapter.web;
 
 import com.growup.backend.api.ProfesorApiDelegate;
-import com.growup.backend.domain.port.in.ActivityInPort;
-import com.growup.backend.domain.port.in.CourseInPort;
+import com.growup.backend.domain.port.in.*;
 import com.growup.backend.infrastructure.adapter.web.mapper.ActivityWebMapper;
 import com.growup.backend.infrastructure.adapter.web.mapper.CourseWebMapper;
+import com.growup.backend.infrastructure.adapter.web.mapper.ReviewWebMapper;
 import com.growup.backend.model.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -25,15 +25,21 @@ public class ProfesorWebAdapter implements ProfesorApiDelegate {
 
     private final CourseInPort courseInPort;
     private final ActivityInPort activityInPort;
+    private final UserInPort userInPort;
+    private final DashboardInPort dashboardInPort;
+    private final ReviewInPort reviewInPort;
     private final CourseWebMapper courseMapper;
     private final ActivityWebMapper activityMapper;
+    private final ReviewWebMapper reviewMapper;
 
-    // TODO: En producción, obtener del SecurityContext
-    private static final UUID MOCK_PROFESOR_ID = UUID.fromString("00000000-0000-0000-0000-000000000002");
+    private UUID getCurrentInstructorId() {
+        String currentEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userInPort.getUserByEmail(currentEmail).getId();
+    }
 
     @Override
     public ResponseEntity<List<Activity>> teacherActivitiesGet(Integer limit) {
-        var activities = activityInPort.getActivitiesByUser(MOCK_PROFESOR_ID);
+        var activities = activityInPort.getActivitiesByUser(getCurrentInstructorId());
         var list = activities.stream()
                 .limit(limit != null ? limit : 10)
                 .map(activityMapper::toDto)
@@ -43,25 +49,25 @@ public class ProfesorWebAdapter implements ProfesorApiDelegate {
 
     @Override
     public ResponseEntity<List<CoursePerformance>> teacherAnalyticsCoursesGet() {
-        // TODO: Implementar analíticas reales en el puerto de entrada
-        return ResponseEntity.ok(Collections.emptyList());
+        var instructorId = getCurrentInstructorId();
+        return ResponseEntity.ok(dashboardInPort.getCoursePerformance(instructorId));
     }
 
     @Override
     public ResponseEntity<List<RevenueData>> teacherAnalyticsRevenueGet(Integer months) {
-        // TODO: Implementar analíticas reales
-        return ResponseEntity.ok(Collections.emptyList());
+        var instructorId = getCurrentInstructorId();
+        return ResponseEntity.ok(dashboardInPort.getRevenueTrends(instructorId, months));
     }
 
     @Override
     public ResponseEntity<AnalyticsSummary> teacherAnalyticsSummaryGet() {
-        // TODO: Implementar analíticas reales
-        return ResponseEntity.ok(new AnalyticsSummary());
+        var instructorId = getCurrentInstructorId();
+        return ResponseEntity.ok(dashboardInPort.getAnalyticsSummary(instructorId));
     }
 
     @Override
     public ResponseEntity<List<CourseItem>> teacherCoursesGet() {
-        var courses = courseInPort.getCoursesByInstructor(MOCK_PROFESOR_ID);
+        var courses = courseInPort.getCoursesByInstructor(getCurrentInstructorId());
         return ResponseEntity.ok(courses.stream()
                 .map(courseMapper::toCourseItemDto)
                 .collect(Collectors.toList()));
@@ -69,7 +75,15 @@ public class ProfesorWebAdapter implements ProfesorApiDelegate {
 
     @Override
     public ResponseEntity<DashboardStats> teacherDashboardStatsGet() {
-        // TODO: Implementar estadísticas reales
-        return ResponseEntity.ok(new DashboardStats());
+        var instructorId = getCurrentInstructorId();
+        return ResponseEntity.ok(dashboardInPort.getDashboardStats(instructorId));
+    }
+
+    @Override
+    public ResponseEntity<List<Review>> teacherReviewsGet() {
+        var reviews = reviewInPort.getReviewsByInstructor(getCurrentInstructorId());
+        return ResponseEntity.ok(reviews.stream()
+                .map(reviewMapper::toDto)
+                .collect(Collectors.toList()));
     }
 }

@@ -30,6 +30,7 @@ src/main/java/com/growup/backend/model/Notification.java
 src/main/java/com/growup/backend/model/NotificationType.java
 src/main/java/com/growup/backend/model/RegisterRequest.java
 src/main/java/com/growup/backend/model/RevenueData.java
+src/main/java/com/growup/backend/model/Review.java
 src/main/java/com/growup/backend/model/Role.java
 src/main/java/com/growup/backend/model/StudentStats.java
 src/main/java/com/growup/backend/model/Syllabus.java

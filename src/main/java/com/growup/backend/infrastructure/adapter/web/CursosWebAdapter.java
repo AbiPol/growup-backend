@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER')")
 public class CursosWebAdapter implements CursosApiDelegate {
 
     private final CourseInPort courseInPort;
@@ -39,11 +38,16 @@ public class CursosWebAdapter implements CursosApiDelegate {
     public ResponseEntity<List<Course>> coursesGet(String category, CourseLevel level, CourseStatus status) {
         log.info("GrowUp-Log: CursosWebAdapter - Buscando cursos con filtros - Categoria: {}, Nivel: {}, Estado: {}",
                 category, level, status);
-        log.info("GrowUp-Log: CursosWebAdapter - Buscando cursos con filtros - Estado: {}", status.getValue());
+
+        String currentEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        var instructor = userInPort.getUserByEmail(currentEmail);
+
         var domainCourses = courseInPort.getAllCourses(
+                instructor.getId(),
                 category,
                 level != null ? level.getValue() : null,
                 status != null ? status.getValue() : null);
+
         return ResponseEntity.ok(domainCourses.stream()
                 .map(courseMapper::toDto)
                 .collect(Collectors.toList()));
@@ -56,6 +60,7 @@ public class CursosWebAdapter implements CursosApiDelegate {
     }
 
     @Override
+    @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
     public ResponseEntity<Course> coursesPost(Course courseDto) {
         // Spring Security ya ha extraído el email del token en el
         // JwtAuthenticationFilter
@@ -70,6 +75,7 @@ public class CursosWebAdapter implements CursosApiDelegate {
     }
 
     @Override
+    @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
     public ResponseEntity<Course> coursesIdPut(UUID id, Course courseDto) {
         // log.info("Updating course with ID: {}", id);
         // log.info("Course DTO: {}", courseDto);
@@ -79,6 +85,7 @@ public class CursosWebAdapter implements CursosApiDelegate {
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER')")
     public ResponseEntity<Void> coursesIdDelete(UUID id) {
         courseInPort.deleteCourse(id);
         return ResponseEntity.noContent().build();

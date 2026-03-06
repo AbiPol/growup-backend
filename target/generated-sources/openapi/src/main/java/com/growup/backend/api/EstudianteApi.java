@@ -8,6 +8,7 @@ package com.growup.backend.api;
 import com.growup.backend.model.EnrolledCourse;
 import com.growup.backend.model.ErrorResponse;
 import com.growup.backend.model.Notification;
+import com.growup.backend.model.Review;
 import com.growup.backend.model.StudentStats;
 import java.util.UUID;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
@@ -32,7 +33,7 @@ import java.util.List;
 import java.util.Map;
 import jakarta.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2026-02-27T09:40:28.900756900Z[Atlantic/Canary]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2026-03-06T08:44:02.779102800Z[Atlantic/Canary]")
 @Validated
 @Tag(name = "Estudiante", description = "the Estudiante API")
 public interface EstudianteApi {
@@ -80,6 +81,51 @@ public interface EstudianteApi {
         @Parameter(name = "id", description = "ID del curso", required = true, in = ParameterIn.PATH) @PathVariable("id") UUID id
     ) {
         return getDelegate().coursesIdEnrollPost(id);
+    }
+
+
+    /**
+     * POST /courses/{id}/reviews : Valorar un curso
+     * Crear una nueva reseña para un curso en el que el estudiante está inscrito
+     *
+     * @param id ID del curso a valorar (required)
+     * @param review  (required)
+     * @return Reseña creada exitosamente (status code 201)
+     *         or Datos inválidos o estudiante no inscrito (status code 400)
+     *         or Curso no encontrado (status code 404)
+     */
+    @Operation(
+        operationId = "coursesIdReviewsPost",
+        summary = "Valorar un curso",
+        description = "Crear una nueva reseña para un curso en el que el estudiante está inscrito",
+        tags = { "Estudiante" },
+        responses = {
+            @ApiResponse(responseCode = "201", description = "Reseña creada exitosamente", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = Review.class))
+            }),
+            @ApiResponse(responseCode = "400", description = "Datos inválidos o estudiante no inscrito", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+            }),
+            @ApiResponse(responseCode = "404", description = "Curso no encontrado", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+            })
+        },
+        security = {
+            @SecurityRequirement(name = "BearerAuth")
+        }
+    )
+    @RequestMapping(
+        method = RequestMethod.POST,
+        value = "/courses/{id}/reviews",
+        produces = { "application/json" },
+        consumes = { "application/json" }
+    )
+    
+    default ResponseEntity<Review> coursesIdReviewsPost(
+        @Parameter(name = "id", description = "ID del curso a valorar", required = true, in = ParameterIn.PATH) @PathVariable("id") UUID id,
+        @Parameter(name = "Review", description = "", required = true) @Valid @RequestBody Review review
+    ) {
+        return getDelegate().coursesIdReviewsPost(id, review);
     }
 
 

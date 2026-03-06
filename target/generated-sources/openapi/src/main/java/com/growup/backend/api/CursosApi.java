@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Map;
 import jakarta.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2026-02-27T09:40:28.900756900Z[Atlantic/Canary]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2026-03-06T08:44:02.779102800Z[Atlantic/Canary]")
 @Validated
 @Tag(name = "Cursos", description = "the Cursos API")
 public interface CursosApi {
@@ -60,6 +60,9 @@ public interface CursosApi {
             @ApiResponse(responseCode = "200", description = "Lista de cursos", content = {
                 @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Course.class)))
             })
+        },
+        security = {
+            @SecurityRequirement(name = "BearerAuth")
         }
     )
     @RequestMapping(

@@ -26,4 +26,9 @@ public interface EnrollmentJpaRepository extends JpaRepository<EnrollmentJpaEnti
     }
 
     boolean existsByUserIdAndCourseId(UUID userId, UUID courseId);
+
+    List<EnrollmentJpaEntity> findByCourseInstructorId(UUID instructorId);
+
+    List<EnrollmentJpaEntity> findByCourseInstructorIdAndCreatedAtAfter(UUID instructorId,
+            java.time.OffsetDateTime date);
 }

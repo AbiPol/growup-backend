@@ -2,12 +2,13 @@ package com.growup.backend.infrastructure.adapter.persistence;
 
 import com.growup.backend.domain.port.out.CoursePersistencePort;
 import com.growup.backend.domain.model.Course;
+import com.growup.backend.model.CourseLevel;
+import com.growup.backend.model.CourseStatus;
 import com.growup.backend.infrastructure.adapter.persistence.jpa.repository.CourseJpaRepository;
 import com.growup.backend.infrastructure.exception.ResourceNotFoundException;
 import com.growup.backend.infrastructure.mapper.CoursePersistenceMapper;
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -71,11 +72,19 @@ public class CoursePersistenceAdapter implements CoursePersistencePort {
     }
 
     @Override
-    public List<Course> findByFilters(String category, String level, String status) {
-        return courseRepository.findByCategory(category).stream()
-                .filter(course -> level == null || course.getLevel().toString().equalsIgnoreCase(level))
+    public List<Course> findByFilters(UUID instructorId, String category, String level, String status) {
+        CourseLevel levelEnum = null;
+        if (level != null && !level.isEmpty()) {
+            levelEnum = CourseLevel.fromValue(level);
+        }
+
+        CourseStatus statusEnum = null;
+        if (status != null && !status.isEmpty()) {
+            statusEnum = CourseStatus.fromValue(status);
+        }
+
+        return courseRepository.findWithFilters(instructorId, category, levelEnum, statusEnum).stream()
                 .map(courseMapper::toDomain)
-                .filter(course -> status == null || course.getPublicationStatus().toString().equalsIgnoreCase(status))
                 .collect(Collectors.toList());
     }
 
